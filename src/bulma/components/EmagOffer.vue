@@ -153,8 +153,6 @@ export default {
         handleError(error) {
             const { status, data } = error.response;
 
-            console.log(data);
-
             if (status === 422) {
                 this.$toastr.error(data.message);
                 this.loading = false;

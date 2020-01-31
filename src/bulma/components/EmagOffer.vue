@@ -1,14 +1,12 @@
 <template>
     <div>
         <v-popover placement="right"
+            :disabled="popoverDisabled"
             trigger="hover"
             v-if="product.emagPartNumber">
             <span class="tag pnk is-clickable is-table-tag"
                   v-if="product.emagPartNumber"
-                  :class="{
-                    'is-warning': product.emagOfferPublished && !product.emagOfferActive,
-                    'is-success': product.emagOfferPublished && product.emagOfferActive
-                }"
+                  :class="offerClass"
                   @click="openEmagPage">
                 {{ product.emagPartNumber }}
             </span>
@@ -59,6 +57,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import { VPopover, VTooltip } from 'v-tooltip';
 import Loader from '@enso-ui/loader/bulma';
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -84,6 +83,29 @@ export default {
     data: () => ({
         loading: false,
     }),
+
+    computed: {
+        ...mapState(['enums']),
+        popoverDisabled() {
+            return `${this.product.emagDocStatus}`
+                !== this.enums.emagDocStatuses.ApprovedDocumentation;
+        },
+        offerClass() {
+            if(this.popoverDisabled) {
+                return 'is-dark';
+            }
+
+            if(`${this.product.emagPriceStatus}` === this.enums.emagPriceStatuses.Invalidprice) {
+                return 'is-danger';
+            }
+
+            if(this.product.emagOfferActive) {
+                return 'is-success';
+            }
+
+            return 'is-warning'; //! this.product.emagOfferActive & default
+        }
+    },
 
     methods: {
         openEmagPage() {

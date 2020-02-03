@@ -87,8 +87,8 @@ export default {
     computed: {
         ...mapState(['enums']),
         popoverDisabled() {
-            return `${this.product.emagDocStatus}`
-                !== this.enums.emagDocStatuses.ApprovedDocumentation;
+            return !!this.product.emagOfferPublished &&
+                `${this.product.emagDocStatus}` !== this.enums.emagDocStatuses.ApprovedDocumentation;
         },
         offerClass() {
             if(this.popoverDisabled) {

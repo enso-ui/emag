@@ -1,82 +1,89 @@
 <template>
-    <div>
-        <v-popover placement="right"
-            :disabled="popoverDisabled"
-            trigger="hover"
-            v-if="product.emagPartNumber">
-            <span class="tag pnk is-clickable is-table-tag"
-                  v-if="product.emagPartNumber"
-                  :class="offerClass"
-                  @click="openEmagPage">
-                {{ product.emagPartNumber }}
-            </span>
-            <template v-slot:popover>
-                <loader size="small"
-                        v-if="loading"/>
-                <ul v-else>
-                    <li v-if="!product.emagOfferPublished">
-                        <a class="button is-success is-small is-bold is-fullwidth has-margin-small"
-                            @click="publishOffer">
+    <v-popover placement="right"
+        :disabled="disabled"
+        trigger="click"
+        v-if="offer">
+        <span class="tag is-clickable is-table-tag"
+              v-if="offer.partNumberKey"
+              :class="offerClass">
+            {{ offer.partNumberKey }}
+        </span>
+        <template v-slot:popover>
+            <div class="emag-offer">
+                <ul class="actions">
+                    <li v-if="offer.partNumberKey">
+                        <a class="button is-info is-small is-bold is-fullwidth"
+                           @click="openMarketplace">
+                            {{ i18n('marketplace') }}
+                        </a>
+                    </li>
+                    <li v-if="!offer.published">
+                        <a class="button is-success is-small is-bold is-fullwidth"
+                           @click="publish">
                             {{ i18n('publish') }}
                         </a>
                     </li>
-                    <li v-if="product.emagOfferPublished === 1 && !product.emagOfferActive">
-                        <a class="button is-success is-small is-bold is-fullwidth has-margin-small"
-                            @click="activateOffer">
-                            {{ i18n('activate') }}
-                        </a>
-                    </li>
-                    <li v-if="product.emagOfferPublished && product.emagOfferActive">
-                        <a class="button is-primary is-small is-bold is-fullwidth has-margin-small"
-                           @click="updatePrice">
-                            {{ i18n('update price') }}
-                        </a>
-                    </li>
-                    <li v-if="product.emagOfferPublished && product.emagOfferActive">
-                        <a class="button is-info is-small is-bold is-fullwidth has-margin-small"
-                           @click="updateStock">
-                            {{ i18n('update stock') }}
-                        </a>
-                    </li>
-                    <li v-if="product.emagOfferPublished && product.emagOfferActive">
-                        <a class="button is-warning is-small is-bold is-fullwidth has-margin-small"
-                            @click="deactivateOffer">
-                            {{ i18n('deactivate') }}
-                        </a>
-                    </li>
+                    <template v-else>
+                        <li v-if="!offer.active">
+                            <a class="button is-success is-small is-bold is-fullwidth"
+                               @click="activate">
+                                {{ i18n('activate') }}
+                            </a>
+                        </li>
+                        <template v-else>
+                            <li>
+                                <a class="button is-success is-small is-bold is-fullwidth"
+                                   @click="updatePrice">
+                                    {{ i18n('update price') }}
+                                </a>
+                            </li>
+                            <li>
+                                <a class="button is-primary is-small is-bold is-fullwidth"
+                                   @click="updateStock">
+                                    {{ i18n('update stock') }}
+                                </a>
+                            </li>
+                            <li>
+                                <a class="button is-warning is-small is-bold is-fullwidth"
+                                   @click="deactivate">
+                                    {{ i18n('deactivate') }}
+                                </a>
+                            </li>
+                        </template>
+                    </template>
                 </ul>
-            </template>
-        </v-popover>
-        <span class="icon is-small has-text-info has-padding-right-large is-clickable"
-              @click="matchProduct"
-              v-tooltip="i18n('Match')"
-              v-else>
-            {{ i18n('N/A') }}
-        </span>
-    </div>
+                <loader size="small"
+                    v-if="loading"/>
+            </div>
+        </template>
+    </v-popover>
+    <span class="tag is-table-tag is-clickable"
+        @click="matchProduct"
+        v-else>
+        {{ i18n('N/A') }}
+    </span>
 </template>
 
 <script>
 import { mapState } from 'vuex';
-import { VPopover, VTooltip } from 'v-tooltip';
+import { VPopover } from 'v-tooltip';
 import Loader from '@enso-ui/loader/bulma';
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { faHandPaper, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
-
-library.add(faHandPaper, faPencilAlt);
 
 export default {
     name: 'EmagOffer',
 
     components: { VPopover, Loader },
-    directives: { tooltip: VTooltip },
 
     inject: ['errorHandler', 'i18n', 'route'],
 
     props: {
-        product: {
-            type: Object,
+        productId: {
+            type: Number,
             required: true,
+        },
+        offer: {
+            type: Object,
+            default: null,
         },
     },
 
@@ -86,91 +93,77 @@ export default {
 
     computed: {
         ...mapState(['enums']),
-        popoverDisabled() {
-            return !!this.product.emagOfferPublished &&
-                `${this.product.emagDocStatus}` !== this.enums.emagDocStatuses.ApprovedDocumentation;
+        disabled() {
+            return !!this.offer.published &&
+                `${this.offer.documentationStatus}` !== this.enums.emagDocStatuses.ApprovedDocumentation;
         },
         offerClass() {
-            if(this.popoverDisabled) {
+            if(this.disabled) {
                 return 'is-dark';
             }
 
-            if(`${this.product.emagPriceStatus}` === this.enums.emagPriceStatuses.Invalidprice) {
+            if(`${this.offer.priceStatus}` === this.enums.emagPriceStatuses.Invalidprice) {
                 return 'is-danger';
             }
 
-            if(this.product.emagOfferActive) {
+            if(this.offer.active) {
                 return 'is-success';
             }
 
-            return 'is-warning'; //! this.product.emagOfferActive & default
+            return 'is-warning';
         }
     },
 
     methods: {
-        openEmagPage() {
-            const uri = `https://marketplace.emag.ro/offers/list?filters_pp%5Bproduct_identifier%5D=${this.product.emagPartNumber}`;
-            window.open(uri, '_blank').focus();
+        openMarketplace() {
+            window.open(this.offer.uri, '_blank').focus();
         },
         matchProduct() {
             this.loading = true;
 
-            axios.post(this.route('emag.offers.match', this.product.id))
-                .then(({ data }) => {
-                    this.$toastr.success(data.message);
-                    this.loading = false;
-                    this.$emit('updated');
-                }).catch(this.handleError);
+            axios.post(this.route('emag.offers.match', this.productId))
+                .then(this.then)
+                .catch(this.handleError);
         },
-        activateOffer() {
+        activate() {
             this.loading = true;
 
-            axios.patch(this.route('emag.offers.activate', this.product.emagOfferId))
-                .then(({ data }) => {
-                    this.$toastr.success(data.message);
-                    this.loading = false;
-                    this.$emit('updated');
-                }).catch(this.handleError);
+            axios.patch(this.route('emag.offers.activate', this.offer.id))
+                .then(this.then)
+                .catch(this.handleError);
         },
-        publishOffer() {
+        publish() {
             this.loading = true;
 
-            axios.patch(this.route('emag.offers.publish', this.product.emagOfferId))
-                .then(({ data }) => {
-                    this.$toastr.success(data.message);
-                    this.loading = false;
-                    this.$emit('updated');
-                }).catch(this.handleError);
+            axios.patch(this.route('emag.offers.publish', this.offer.id))
+                .then(this.then)
+                .catch(this.handleError);
         },
         updatePrice() {
             this.loading = true;
 
-            axios.patch(this.route('emag.offers.updatePrice', this.product.emagOfferId))
-                .then(({ data }) => {
-                    this.$toastr.success(data.message);
-                    this.loading = false;
-                    this.$emit('updated');
-                }).catch(this.handleError);
+            axios.patch(this.route('emag.offers.updatePrice', this.offer.id))
+                .then(this.then)
+                .catch(this.handleError);
         },
         updateStock() {
             this.loading = true;
 
-            axios.patch(this.route('emag.offers.updateStock', this.product.emagOfferId))
-                .then(({ data }) => {
-                    this.$toastr.success(data.message);
-                    this.loading = false;
-                    this.$emit('updated');
-                }).catch(this.handleError);
+            axios.patch(this.route('emag.offers.updateStock', this.offer.id))
+                .then(this.then)
+                .catch(this.handleError);
         },
-        deactivateOffer() {
+        deactivate() {
             this.loading = true;
 
-            axios.patch(this.route('emag.offers.deactivate', this.product.emagOfferId))
-                .then(({ data }) => {
-                    this.$toastr.success(data.message);
-                    this.loading = false;
-                    this.$emit('updated');
-                }).catch(this.handleError);
+            axios.patch(this.route('emag.offers.deactivate', this.offer.id))
+                .then(this.then)
+                .catch(this.handleError);
+        },
+        then({ data }) {
+            this.$toastr.success(data.message);
+            this.loading = false;
+            this.$emit('updated');
         },
         handleError(error) {
             const { status, data } = error.response;
@@ -188,9 +181,7 @@ export default {
 </script>
 
 <style lang="scss">
-    .tag.pnk {
-        padding: 0 5px;
-        font-size: 0.9em;
-        height: unset;
+    .emag-offer .actions li:not(:last-child) .button{
+        margin-bottom: 3px;
     }
 </style>

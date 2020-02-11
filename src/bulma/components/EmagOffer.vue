@@ -166,11 +166,11 @@ export default {
             this.$emit('updated');
         },
         handleError(error) {
+            this.loading = false;
             const { status, data } = error.response;
 
             if (status === 422) {
                 this.$toastr.error(data.message);
-                this.loading = false;
                 return;
             }
 

@@ -95,7 +95,7 @@ export default {
         ...mapState(['enums']),
         disabled() {
             return !!this.offer.published &&
-                `${this.offer.documentationStatus}` !== this.enums.emagDocStatuses.ApprovedDocumentation;
+                `${this.offer.documentationStatus}` !== this.enums.emagDocumentationStatuses.ApprovedDocumentation;
         },
         offerClass() {
             if(this.disabled) {

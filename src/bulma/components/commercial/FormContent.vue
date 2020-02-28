@@ -29,16 +29,26 @@
                         </div>
                         <div class="column is-narrow"
                             v-else-if="enums.orders.Sale === form.param('type')">
-                            <div class="control is-flex">
-                                <form-field :field="form.field('emag_number')"
-                                    v-bind="$attrs"/>
-                                <a class="button sync-control"
-                                    :class="{ 'is-loading': loading }"
-                                    @click="sync">
-                                    <span class="icon">
-                                        <fa icon="sync"/>
-                                    </span>
-                                </a>
+                            <div class="field">
+                                <label class="label">
+                                    {{ i18n(form.field('emag_number').label) }}
+                                </label>
+                                <div class="control has-margin-small">
+                                    <div class="tags has-addons" >
+                                        <span class="tag is-success is-medium is-clickable"
+                                            @click="openMarketplace">
+                                            {{form.field('emag_number').value}}
+                                        </span>
+                                        <a class="tag is-info is-medium"
+                                            :class="{ 'is-loading': loading }"
+                                            :disabled="fulfilling()"
+                                            @click="sync">
+                                                <span class="icon">
+                                                    <fa icon="sync"/>
+                                                </span>
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -62,7 +72,7 @@ export default {
 
     components: { Partners, Actions, FormField },
 
-    inject: ['i18n', 'order', 'hasLines', 'route', 'reloadOrder'],
+    inject: ['i18n', 'order', 'hasLines', 'route', 'reloadOrder', 'fulfilling'],
 
     data: () => ({
         loading: false,
@@ -88,6 +98,13 @@ export default {
     },
 
     methods: {
+        openMarketplace() {
+            const url = this.enums.emagApi.offerURL
+                .replace(':orderId', this.form.field('emag_number').value)
+                .replace(':apiCode', this.enums.emagApi.apiCode);
+
+            window.open(url, '_blank').focus();
+        },
         sync() {
             this.loading = true;
             this.order.processing = true;
@@ -114,10 +131,6 @@ export default {
         .button {
             padding-left: 0.6em;
             padding-right: 0.6em;
-
-            &.sync-control {
-                margin-top: 2em;
-            }
         }
 
         .field > .control > .input {

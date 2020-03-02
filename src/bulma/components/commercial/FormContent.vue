@@ -29,7 +29,8 @@
                         </div>
                         <div class="column is-narrow"
                             v-else-if="enums.orders.Sale === form.param('type')">
-                            <div class="field">
+                            <div class="field"
+                                v-if="form.field('emag_number').value">
                                 <label class="label">
                                     {{ i18n(form.field('emag_number').label) }}
                                 </label>

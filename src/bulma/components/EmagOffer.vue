@@ -19,7 +19,7 @@
                     </li>
                     <li v-if="!offer.published">
                         <a class="button is-success is-small is-bold is-fullwidth"
-                           @click="publish">
+                           @click="publishMatched">
                             {{ i18n('publish') }}
                         </a>
                     </li>
@@ -57,11 +57,31 @@
             </div>
         </template>
     </v-popover>
-    <span class="tag is-table-tag is-clickable"
-        @click="matchProduct"
+    <v-popover placement="right"
+        trigger="click"
         v-else>
-        {{ i18n('N/A') }}
-    </span>
+        <span class="tag is-table-tag is-clickable">
+            {{ i18n('N/A') }}
+        </span>
+        <template v-slot:popover>
+            <div class="emag-offer">
+                <ul class="actions">
+                    <li>
+                        <a class="button is-info is-small is-bold is-fullwidth"
+                           @click="matchProduct">
+                            {{ i18n('match') }}
+                        </a>
+                    </li>
+                    <li>
+                        <a class="button is-success is-small is-bold is-fullwidth"
+                           @click="publishNew">
+                            {{ i18n('publish new') }}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </template>
+    </v-popover>
 </template>
 
 <script>
@@ -132,7 +152,7 @@ export default {
                 .then(this.then)
                 .catch(this.handleError);
         },
-        publish() {
+        publishMatched() {
             this.loading = true;
 
             axios.patch(this.route('emag.offers.publish', this.offer.id))
@@ -157,6 +177,13 @@ export default {
             this.loading = true;
 
             axios.patch(this.route('emag.offers.deactivate', this.offer.id))
+                .then(this.then)
+                .catch(this.handleError);
+        },
+        publishNew() {
+            this.loading = true;
+
+            axios.post(this.route('emag.products.publish', this.productId))
                 .then(this.then)
                 .catch(this.handleError);
         },

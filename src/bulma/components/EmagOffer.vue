@@ -19,6 +19,7 @@
                     </li>
                     <li v-if="!offer.published">
                         <a class="button is-success is-small is-bold is-fullwidth"
+                           :class="{ 'is-loading': loading }"
                            @click="publishMatched">
                             {{ i18n('publish') }}
                         </a>
@@ -26,6 +27,7 @@
                     <template v-else>
                         <li v-if="!offer.active">
                             <a class="button is-success is-small is-bold is-fullwidth"
+                               :class="{ 'is-loading': loading }"
                                @click="activate">
                                 {{ i18n('activate') }}
                             </a>
@@ -33,18 +35,21 @@
                         <template v-else>
                             <li>
                                 <a class="button is-success is-small is-bold is-fullwidth"
+                                   :class="{ 'is-loading': loading }"
                                    @click="updatePrice">
                                     {{ i18n('update price') }}
                                 </a>
                             </li>
                             <li>
                                 <a class="button is-primary is-small is-bold is-fullwidth"
+                                   :class="{ 'is-loading': loading }"
                                    @click="updateStock">
                                     {{ i18n('update stock') }}
                                 </a>
                             </li>
                             <li>
                                 <a class="button is-warning is-small is-bold is-fullwidth"
+                                   :class="{ 'is-loading': loading }"
                                    @click="deactivate">
                                     {{ i18n('deactivate') }}
                                 </a>
@@ -52,8 +57,6 @@
                         </template>
                     </template>
                 </ul>
-                <loader size="small"
-                    v-if="loading"/>
             </div>
         </template>
     </v-popover>
@@ -68,12 +71,14 @@
                 <ul class="actions">
                     <li>
                         <a class="button is-info is-small is-bold is-fullwidth"
+                           :class="{ 'is-loading': loading }"
                            @click="matchProduct">
                             {{ i18n('match') }}
                         </a>
                     </li>
                     <li>
                         <a class="button is-success is-small is-bold is-fullwidth"
+                           :class="{ 'is-loading': loading }"
                            @click="publishNew">
                             {{ i18n('publish new') }}
                         </a>

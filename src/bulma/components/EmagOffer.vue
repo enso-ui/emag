@@ -36,15 +36,8 @@
                             <li>
                                 <a class="button is-success is-small is-bold is-fullwidth"
                                    :class="{ 'is-loading': loading }"
-                                   @click="updatePrice">
-                                    {{ i18n('update price') }}
-                                </a>
-                            </li>
-                            <li>
-                                <a class="button is-primary is-small is-bold is-fullwidth"
-                                   :class="{ 'is-loading': loading }"
-                                   @click="updateStock">
-                                    {{ i18n('update stock') }}
+                                   @click="update">
+                                    {{ i18n('update') }}
                                 </a>
                             </li>
                             <li>
@@ -164,17 +157,10 @@ export default {
                 .then(this.then)
                 .catch(this.handleError);
         },
-        updatePrice() {
+        update() {
             this.loading = true;
 
-            axios.patch(this.route('emag.offers.updatePrice', this.offer.id))
-                .then(this.then)
-                .catch(this.handleError);
-        },
-        updateStock() {
-            this.loading = true;
-
-            axios.patch(this.route('emag.offers.updateStock', this.offer.id))
+            axios.patch(this.route('emag.offers.update', this.offer.id))
                 .then(this.then)
                 .catch(this.handleError);
         },

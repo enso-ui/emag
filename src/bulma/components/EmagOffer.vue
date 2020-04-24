@@ -1,96 +1,112 @@
 <template>
-    <v-popover placement="right"
-        :disabled="disabled"
-        trigger="click"
-        v-if="offer">
-        <span class="tag is-clickable is-table-tag"
-              v-if="offer.partNumberKey"
-              :class="offerClass">
-            {{ offer.partNumberKey }}
-        </span>
-        <template v-slot:popover>
-            <div class="emag-offer">
-                <ul class="actions">
-                    <li v-if="offer.partNumberKey">
-                        <a class="button is-info is-small is-bold is-fullwidth"
-                           @click="openMarketplace">
-                            {{ i18n('marketplace') }}
-                        </a>
-                    </li>
-                    <li v-if="!offer.published">
-                        <a class="button is-success is-small is-bold is-fullwidth"
-                           :class="{ 'is-loading': loading }"
-                           @click="publishMatched">
-                            {{ i18n('publish') }}
-                        </a>
-                    </li>
-                    <template v-else>
-                        <li v-if="!offer.active">
+    <div>
+        <v-popover placement="right"
+            :disabled="disabled"
+            trigger="click"
+            v-if="offer">
+            <span class="tag is-clickable is-table-tag"
+                  v-if="offer.partNumberKey"
+                  :class="offerClass">
+                {{ offer.partNumberKey }}
+            </span>
+            <template v-slot:popover>
+                <div class="emag-offer">
+                    <ul class="actions">
+                        <li v-if="offer.partNumberKey">
+                            <a class="button is-info is-small is-bold is-fullwidth"
+                               @click="openMarketplace">
+                                {{ i18n('marketplace') }}
+                            </a>
+                        </li>
+                        <li v-if="!offer.published">
                             <a class="button is-success is-small is-bold is-fullwidth"
                                :class="{ 'is-loading': loading }"
-                               @click="activate">
-                                {{ i18n('activate') }}
+                               @click="publishMatched">
+                                {{ i18n('publish') }}
                             </a>
                         </li>
                         <template v-else>
-                            <li>
+                            <li v-if="!offer.active">
                                 <a class="button is-success is-small is-bold is-fullwidth"
                                    :class="{ 'is-loading': loading }"
-                                   @click="update">
-                                    {{ i18n('update') }}
+                                   @click="activate">
+                                    {{ i18n('activate') }}
                                 </a>
                             </li>
-                            <li>
-                                <a class="button is-warning is-small is-bold is-fullwidth"
-                                   :class="{ 'is-loading': loading }"
-                                   @click="deactivate">
-                                    {{ i18n('deactivate') }}
-                                </a>
-                            </li>
+                            <template v-else>
+                                <li>
+                                    <a class="button is-success is-small is-bold is-fullwidth"
+                                       :class="{ 'is-loading': loading }"
+                                       @click="update">
+                                        {{ i18n('update') }}
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="button is-warning is-small is-bold is-fullwidth"
+                                       :class="{ 'is-loading': loading }"
+                                       @click="deactivate">
+                                        {{ i18n('deactivate') }}
+                                    </a>
+                                </li>
+                            </template>
                         </template>
-                    </template>
-                </ul>
-            </div>
-        </template>
-    </v-popover>
-    <v-popover placement="right"
-        trigger="click"
-        v-else>
-        <span class="tag is-table-tag is-clickable">
-            {{ i18n('N/A') }}
-        </span>
-        <template v-slot:popover>
-            <div class="emag-offer">
-                <ul class="actions">
-                    <li>
-                        <a class="button is-info is-small is-bold is-fullwidth"
-                           :class="{ 'is-loading': loading }"
-                           @click="matchProduct">
-                            {{ i18n('match') }}
-                        </a>
-                    </li>
-                    <li>
-                        <a class="button is-success is-small is-bold is-fullwidth"
-                           :class="{ 'is-loading': loading }"
-                           @click="publishNew">
-                            {{ i18n('publish new') }}
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </template>
-    </v-popover>
+                    </ul>
+                </div>
+            </template>
+        </v-popover>
+        <v-popover placement="right"
+            trigger="click"
+            ref="popover"
+            v-else>
+            <span class="tag is-table-tag is-clickable">
+                {{ i18n('N/A') }}
+            </span>
+            <template v-slot:popover>
+                <div class="emag-offer">
+                    <ul class="actions">
+                        <li>
+                            <a class="button is-info is-small is-bold is-fullwidth"
+                               :class="{ 'is-loading': loading }"
+                               @click="matchProduct">
+                                {{ i18n('match') }}
+                            </a>
+                        </li>
+                        <li v-if="emagProducts.length">
+                            <a class="button is-warning is-small is-bold is-fullwidth"
+                               :class="{ 'is-loading': loading }"
+                               @click="chooseMatch = true; $refs.popover.hide()">
+                                {{ i18n('choose match') }}
+                            </a>
+                        </li>
+                        <li>
+                            <a class="button is-success is-small is-bold is-fullwidth"
+                               :class="{ 'is-loading': loading }"
+                               @click="publishNew">
+                                {{ i18n('publish new') }}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </template>
+        </v-popover>
+        <emag-product
+            :emag-products="emagProducts"
+            v-if="chooseMatch"
+            @close="chooseMatch = false"
+            @matched="publishMatched"
+        />
+    </div>
 </template>
 
 <script>
 import { mapState } from 'vuex';
 import { VPopover } from 'v-tooltip';
-import Loader from '@enso-ui/loader/bulma';
+import EmagProduct from './EmagProduct.vue'
 
 export default {
     name: 'EmagOffer',
 
-    components: { VPopover, Loader },
+    components: { VPopover, EmagProduct },
 
     inject: ['errorHandler', 'i18n', 'route'],
 
@@ -103,10 +119,15 @@ export default {
             type: Object,
             default: null,
         },
+        emagProducts: {
+            type: Array,
+            default: null,
+        },
     },
 
     data: () => ({
         loading: false,
+        chooseMatch: false,
     }),
 
     computed: {
@@ -139,7 +160,7 @@ export default {
         matchProduct() {
             this.loading = true;
 
-            axios.post(this.route('emag.offers.match', this.productId))
+            axios.post(this.route('emag.products.match', this.productId))
                 .then(this.then)
                 .catch(this.handleError);
         },
@@ -147,13 +168,6 @@ export default {
             this.loading = true;
 
             axios.patch(this.route('emag.offers.activate', this.offer.id))
-                .then(this.then)
-                .catch(this.handleError);
-        },
-        publishMatched() {
-            this.loading = true;
-
-            axios.patch(this.route('emag.offers.publish', this.offer.id))
                 .then(this.then)
                 .catch(this.handleError);
         },
@@ -175,6 +189,13 @@ export default {
             this.loading = true;
 
             axios.post(this.route('emag.products.publish', this.productId))
+                .then(this.then)
+                .catch(this.handleError);
+        },
+        publishMatched(emagProduct) {
+            this.loading = true;
+
+            axios.post(this.route('emag.offers.publish', emagProduct.id))
                 .then(this.then)
                 .catch(this.handleError);
         },

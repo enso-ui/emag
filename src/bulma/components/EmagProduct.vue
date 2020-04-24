@@ -13,7 +13,10 @@
                         <article class="media">
                             <figure class="media-left">
                                 <p class="image is-128x128">
-                                    <img :src="product.remote.images[0].url">
+                                    <img :src="product.remote.images[0].url"
+                                        v-if="product.remote.images.length">
+                                    <img src="/images/not-available-circle.svg" alt="N/A"
+                                        v-else>
                                 </p>
                             </figure>
                             <div class="media-content">

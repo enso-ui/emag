@@ -58,7 +58,8 @@
             trigger="click"
             ref="popover"
             v-else>
-            <span class="tag is-table-tag is-clickable">
+            <span class="tag is-table-tag is-clickable"
+                :class="{'has-text-info': emagProducts.length}">
                 {{ i18n('N/A') }}
             </span>
             <template v-slot:popover>

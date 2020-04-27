@@ -3,7 +3,7 @@
         v-on="$listeners">
         <div class="box" style="width: 100%;">
             <h5 class="subtitle is-6">
-                {{ i18n("Choose for") }} ᵒ {{ product.name }} ᵒ {{ product.part_number }}
+                {{ product.name }} ᵒ {{ product.part_number }}
             </h5>
             <hr>
             <div

@@ -90,7 +90,7 @@
             </template>
         </v-popover>
         <emag-product
-            :emag-products="emagProducts"
+            :product="product"
             v-if="chooseMatch"
             @close="chooseMatch = false"
             @matched="publishMatched"
@@ -111,17 +111,14 @@ export default {
     inject: ['errorHandler', 'i18n', 'route'],
 
     props: {
-        productId: {
-            type: Number,
-            required: true,
-        },
-        offer: {
+        product: {
             type: Object,
-            default: null,
-        },
-        emagProducts: {
-            type: Array,
-            default: null,
+            required: true,
+            validator: v => {
+                return v.hasOwnProperty('id')
+                && v.hasOwnProperty('emagOffer')
+                && v.hasOwnProperty('emag_products');
+            },
         },
     },
 
@@ -132,6 +129,15 @@ export default {
 
     computed: {
         ...mapState(['enums']),
+        productId() {
+            return this.product.id;
+        },
+        offer() {
+            return this.product.emagOffer;
+        },
+        emagProducts() {
+            return this.product.emag_products;
+        },
         disabled() {
             return !!this.offer.published &&
                 `${this.offer.documentationStatus}` !== this.enums.emagDocumentationStatuses.ApprovedDocumentation;

@@ -3,7 +3,7 @@
         v-on="$listeners">
         <div class="box" style="width: 100%;">
             <h5 class="subtitle is-6">
-                {{ i18n("Choose") }}
+                {{ i18n("Choose for") }} ᵒ {{ product.name }} ᵒ {{ product.part_number }}
             </h5>
             <hr>
             <div
@@ -34,8 +34,8 @@
                                     </p>
                                 </div>
                             </div>
-                            <div class="media-right">
-                                <a class="button is-success is-small is-bold is-fullwidth"
+                            <div class="media-right aligner">
+                                <a class="button is-success is-small is-bold has-margin-medium"
                                    @click="$emit('matched', product)">
                                     {{ i18n('choose') }}
                                 </a>
@@ -59,15 +59,20 @@ export default {
     components: { Modal },
 
     props: {
-        emagProducts: {
-            type: Array,
-            default: null,
+        product: {
+            type: Object,
+            required: true,
         },
+    },
+
+    computed: {
+        emagProducts() {
+            return this.product.emag_products;
+        }
     },
 
     methods: {
         attribute(product, name) {
-            debugger
             let attribute =  Object.entries(product.remote.characteristics)
                 .find(attribute => attribute[1].name === name);
 
@@ -77,6 +82,28 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 
+    article {
+        border: 1px solid transparent;
+
+        .media-right .button {
+            visibility: hidden;
+        }
+    }
+
+    article:hover {
+        border: 1px solid #d0d0d0;
+
+        .media-right .button {
+            visibility:visible;
+        }
+    }
+
+    .aligner {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 8em;
+    }
 </style>

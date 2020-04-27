@@ -147,7 +147,7 @@ export default {
                 return 'is-dark';
             }
 
-            if(`${this.offer.priceStatus}` === this.enums.emagPriceStatuses.Invalidprice) {
+            if(`${this.offer.priceStatus}` === this.enums.emagPriceStatuses.Invalid) {
                 return 'is-danger';
             }
 

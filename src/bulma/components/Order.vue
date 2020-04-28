@@ -44,7 +44,7 @@ export default {
 
     methods: {
         openMarketplace() {
-            const url = this.enums.emagApi.offerURL
+            const url = this.enums.emagApi.orderUrl
                 .replace(':orderId', this.form.field('emag_number').value)
                 .replace(':apiCode', this.enums.emagApi.apiCode);
 

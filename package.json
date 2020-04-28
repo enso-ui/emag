@@ -1,6 +1,6 @@
 {
     "name": "@enso-ui/emag",
-    "version": "1.0.12",
+    "version": "1.0.13",
     "description": "emag package",
     "main": "src/bulma/pages/emails/Index.vue",
     "scripts": {

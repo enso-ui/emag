@@ -97,6 +97,7 @@ export default {
                     const { offer } = data;
                     this.product.emagOffer = offer;
                     this.state.loading = false;
+                    this.chooseMatch = false;
                 }).catch(this.handleError);
         },
     },

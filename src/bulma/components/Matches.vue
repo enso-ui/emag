@@ -11,7 +11,7 @@
                 <product-card v-for="product in product.emagProducts"
                     :key="product.id"
                     :product="product"
-                    @publish="publish"/>
+                    @publish="publish(product)"/>
                 </div>
             </div>
         </div>

@@ -54,10 +54,10 @@ export default {
                 .then(({ data }) => {
                     this.state.loading = false;
 
-                    this.product.emagOffer = data.offer;
-                }).catch(this.handleError);
+                    this.$emit('close');
 
-            this.$emit('close');
+                    this.$nextTick(() => this.product.emagOffer = data.offer);
+                }).catch(this.handleError);
         },
     },
 }

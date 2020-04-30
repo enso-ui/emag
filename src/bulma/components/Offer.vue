@@ -18,28 +18,26 @@
                         {{ i18n('marketplace') }}
                     </a>
                 </li>
-                <template v-if="offer.published">
-                    <template v-if="valid">
-                        <li v-if="offer.active">
-                            <a class="button is-warning is-small is-bold is-fullwidth"
-                                @click="deactivate">
-                                {{ i18n('deactivate') }}
-                            </a>
-                        </li>
-                        <li v-else>
-                            <a class="button is-success is-small is-bold is-fullwidth"
-                                @click="activate">
-                                {{ i18n('activate') }}
-                            </a>
-                        </li>
-                    </template>
-                    <li>
-                        <a class="button is-primary is-small is-bold is-fullwidth"
-                            @click="update">
-                            {{ i18n('update') }}
+                <template v-if="valid">
+                    <li v-if="offer.active">
+                        <a class="button is-warning is-small is-bold is-fullwidth"
+                            @click="deactivate">
+                            {{ i18n('deactivate') }}
+                        </a>
+                    </li>
+                    <li v-else>
+                        <a class="button is-success is-small is-bold is-fullwidth"
+                            @click="activate">
+                            {{ i18n('activate') }}
                         </a>
                     </li>
                 </template>
+                <li>
+                    <a class="button is-primary is-small is-bold is-fullwidth"
+                        @click="update">
+                        {{ i18n('update') }}
+                    </a>
+                </li>
             </ul>
             <loader v-if="state.loading"/>
         </template>

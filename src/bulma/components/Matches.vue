@@ -12,7 +12,6 @@
                     :key="product.id"
                     :product="product"
                     @publish="publish(product)"/>
-                </div>
             </div>
         </div>
     </modal>
@@ -21,11 +20,14 @@
 <script>
 import { Modal } from '@enso-ui/modal/bulma';
 import ProductCard from './ProductCard.vue';
+import errorHandler from './errorHandler';
 
 export default {
     name: 'Matches',
 
     inject: ['route'],
+
+    mixins: [errorHandler],
 
     components: { Modal, ProductCard },
 
@@ -50,14 +52,14 @@ export default {
 
             axios.post(this.route('emag.emagProducts.publish', emagProduct.id))
                 .then(({ data }) => {
-                const { message, offer } = data;
-                this.$toastr.success(message);
-                this.state.loading = false;
-                this.product.emagOffer = offer;
-                this.$emit('close');
-            }).catch(this.handleError);
+                    this.state.loading = false;
+
+                    this.product.emagOffer = data.offer;
+                }).catch(this.handleError);
+
+            this.$emit('close');
         },
-    }
+    },
 }
 </script>
 

@@ -21,13 +21,13 @@
     },
     "homepage": "https://github.com/enso-ui/emails#readme",
     "dependencies": {
-        "@enso-ui/commercial": "1.5.x",
-        "@enso-ui/loader": "1.0.x",
-        "@enso-ui/mixins": "1.1.x",
-        "v-tooltip": "2.0.x",
+        "@enso-ui/commercial": "^2.0",
+        "@enso-ui/loader": "^2.0",
+        "@enso-ui/mixins": "^1.1",
         "@fortawesome/fontawesome-svg-core": "^1.2.2",
         "@fortawesome/free-regular-svg-icons": "^5.2.0",
         "@fortawesome/free-solid-svg-icons": "^5.2.0",
+        "v-tooltip": "^2.0.0",
         "vue": "^2.5.16",
         "vuex": "^3.0.0"
     },

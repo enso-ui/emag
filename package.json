@@ -23,7 +23,7 @@
     "dependencies": {
         "@enso-ui/commercial": "^2.0",
         "@enso-ui/loader": "^2.0",
-        "@enso-ui/mixins": "^1.1",
+        "@enso-ui/mixins": "^2.0",
         "@fortawesome/fontawesome-svg-core": "^1.2.2",
         "@fortawesome/free-regular-svg-icons": "^5.2.0",
         "@fortawesome/free-solid-svg-icons": "^5.2.0",

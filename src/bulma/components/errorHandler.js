@@ -1,5 +1,5 @@
 export default {
-    inject: ['errorHandler'],
+    inject: ['errorHandler', 'toastr'],
 
     methods: {
         handleError(error) {
@@ -7,7 +7,7 @@ export default {
             const { status, data } = error.response;
 
             if (status === 422) {
-                this.$toastr.error(data.message);
+                this.toastr.error(data.message);
                 return;
             }
 

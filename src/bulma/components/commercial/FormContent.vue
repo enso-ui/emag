@@ -25,20 +25,20 @@
                              v-if="[enums.orders.Purchase, enums.orders.PurchaseReturn]
                                 .includes(form.param('type'))">
                             <form-field v-bind="$attrs"
-                                :field="form.field('supplier_number')"/>
+                                :field="form.field('supplier_order_reference')"/>
                         </div>
                         <div class="column is-narrow"
                             v-else-if="enums.orders.Sale === form.param('type')">
                             <div class="field"
-                                v-if="form.field('emag_number').value">
+                                v-if="form.field('client_order_reference').value">
                                 <label class="label">
-                                    {{ i18n(form.field('emag_number').label) }}
+                                    {{ i18n(form.field('client_order_reference').label) }}
                                 </label>
                                 <div class="control has-margin-small">
                                     <div class="tags has-addons" >
                                         <span class="tag is-success is-medium is-clickable"
                                             @click="openMarketplace">
-                                            {{form.field('emag_number').value}}
+                                            {{form.field('client_order_reference').value}}
                                         </span>
                                         <a class="tag is-info is-medium"
                                             :class="{ 'is-loading': loading }"
@@ -101,7 +101,7 @@ export default {
     methods: {
         openMarketplace() {
             const url = this.enums.emagApi.orderUrl
-                .replace(':orderId', this.form.field('emag_number').value)
+                .replace(':orderId', this.form.field('client_order_reference').value)
                 .replace(':apiCode', this.enums.emagApi.apiCode);
 
             window.open(url, '_blank').focus();

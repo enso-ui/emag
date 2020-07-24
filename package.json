@@ -21,7 +21,7 @@
     },
     "homepage": "https://github.com/enso-ui/emails#readme",
     "dependencies": {
-        "@enso-ui/commercial": "^2.0",
+        "@enso-ui/commercial": "^3.0",
         "@enso-ui/loader": "^2.0",
         "@enso-ui/mixins": "^2.0",
         "@fortawesome/fontawesome-svg-core": "^1.2.2",

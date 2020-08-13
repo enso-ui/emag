@@ -16,11 +16,12 @@
             </div>
             <div class="column is-3">
                 <enso-select-filter class="box raises-on-hover"
-                    source="administration.publishers.options"
+                    source="administration.companies.options"
+                    :params="{is_publisher: true}"
                     :name="i18n('Publisher')"
                     ref="selectFilter"
                     :disabled="!params.publisher"
-                    v-model="filters.products.publisher_id"/>
+                    v-model="filters.products.manufacturer_id"/>
             </div>
             <div class="column is-3">
                 <enso-select-filter class="box raises-on-hover"
@@ -176,7 +177,7 @@ export default {
             productId: null,
             filters: {
                 products: {
-                    publisher_id: null,
+                    manufacturer_id: null,
                 },
                 emag_offers: {
                     documentation_status: null,

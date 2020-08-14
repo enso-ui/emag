@@ -1,7 +1,7 @@
 <template>
     <div class="field">
         <label class="label">
-            {{ i18n(form.field('client_order_reference').label) }}
+            {{ i18n('Emag Number') }}
         </label>
         <div class="control has-margin-small">
             <div class="tags has-addons">

@@ -28,29 +28,9 @@
                                 :field="form.field('supplier_order_reference')"/>
                         </div>
                         <div class="column is-narrow"
-                            v-else-if="enums.orders.Sale === form.param('type')">
-                            <div class="field"
-                                v-if="form.field('client_order_reference').value">
-                                <label class="label">
-                                    {{ i18n(form.field('client_order_reference').label) }}
-                                </label>
-                                <div class="control has-margin-small">
-                                    <div class="tags has-addons" >
-                                        <span class="tag is-success is-medium is-clickable"
-                                            @click="openMarketplace">
-                                            {{form.field('client_order_reference').value}}
-                                        </span>
-                                        <a class="tag is-info is-medium"
-                                            :class="{ 'is-loading': loading }"
-                                            :disabled="fulfilling()"
-                                            @click="sync">
-                                                <span class="icon">
-                                                    <fa icon="sync"/>
-                                                </span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
+                             v-else-if="enums.orders.Sale === form.param('type')">
+                            <emag-order
+                                v-if="form.field('client_order_reference').value"/>
                         </div>
                     </div>
                 </div>
@@ -65,19 +45,16 @@
 <script>
 import { mapState } from 'vuex';
 import { FormField } from '@enso-ui/forms/bulma';
+import EmagOrder from '@enso-ui/emag/src/bulma/components/Order.vue';
 import Partners from './Partners.vue';
 import Actions from './Actions.vue';
 
 export default {
     name: 'FormContent',
 
-    components: { Partners, Actions, FormField },
+    components: { Actions, EmagOrder, FormField, Partners, },
 
-    inject: ['i18n', 'order', 'hasLines', 'route', 'reloadOrder', 'fulfilling'],
-
-    data: () => ({
-        loading: false,
-    }),
+    inject: ['order', 'hasLines'],
 
     computed: {
         ...mapState(['enums']),
@@ -98,32 +75,6 @@ export default {
         },
     },
 
-    methods: {
-        openMarketplace() {
-            const url = this.enums.emagApi.orderUrl
-                .replace(':orderId', this.form.field('client_order_reference').value)
-                .replace(':apiCode', this.enums.emagApi.apiCode);
-
-            window.open(url, '_blank').focus();
-        },
-        sync() {
-            this.loading = true;
-            this.order.processing = true;
-
-            axios.patch(this.route(
-                'commercial.sales.syncEmag',
-                this.$route.params
-            )).then(() => {
-                this.loading = false;
-                this.order.processing = false;
-                this.reloadOrder();
-            }).catch(error => {
-                this.loading = false;
-                this.order.processing = false;
-                this.errorHandler(error);
-            })
-        }
-    }
 };
 </script>
 

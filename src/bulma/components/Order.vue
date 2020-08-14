@@ -1,6 +1,5 @@
 <template>
-    <div class="field"
-         v-if="form.field('client_order_reference').value">
+    <div class="field">
         <label class="label">
             {{ i18n(form.field('client_order_reference').label) }}
         </label>

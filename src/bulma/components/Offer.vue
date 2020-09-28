@@ -18,6 +18,12 @@
                         {{ i18n('marketplace') }}
                     </a>
                 </li>
+                <li v-if="offer.partNumberKey">
+                    <a class="button is-info is-light is-small is-bold is-fullwidth"
+                        @click="fetchPicture">
+                        {{ i18n('fetch picture') }}
+                    </a>
+                </li>
                 <template v-if="valid">
                     <li v-if="offer.active">
                         <a class="button is-warning is-small is-bold is-fullwidth"
@@ -121,6 +127,16 @@ export default {
 
             axios.patch(this.route('emag.offers.deactivate', this.offer.id))
                 .then(this.then)
+                .catch(this.handleError);
+        },
+        fetchPicture() {
+            this.state.loading = true;
+
+            axios.post(this.route('emag.products.fetchPicture', this.product.id))
+                .then(({ data }) => {
+                    this.state.loading = false;
+                    this.toastr.success(data.message);
+                })
                 .catch(this.handleError);
         },
         then({ data }) {

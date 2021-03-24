@@ -7,7 +7,7 @@
             <div class="tags has-addons">
                 <span class="tag is-success is-medium is-clickable"
                     @click="openMarketplace">
-                    {{ form.field('client_order_reference').value }}
+                    {{ form.field('external_reference').value }}
                 </span>
                 <a class="tag is-info is-medium"
                     :class="{ 'is-loading': loading }"
@@ -44,7 +44,7 @@ export default {
     methods: {
         openMarketplace() {
             const url = this.enums.emagApi.orderUrl
-                .replace(':orderId', this.form.field('client_order_reference').value)
+                .replace(':orderId', this.form.field('external_reference').value)
                 .replace(':apiCode', this.enums.emagApi.apiCode);
 
             window.open(url, '_blank').focus();

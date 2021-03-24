@@ -24,13 +24,10 @@
                         </div>
                         <div class="column is-narrow"
                             v-if="partner">
+                            <emag-order v-if="isEmag"/>
                             <form-field v-bind="$attrs"
-                                :field="field('external_reference')"/>
-                        </div>
-                        <div class="column is-narrow"
-                             v-else-if="enums.orders.Sale === form.param('type')">
-                            <emag-order
-                                v-if="field('external_reference').value"/>
+                                :field="field('external_reference')"
+                                v-else/>
                         </div>
                     </div>
                 </div>
@@ -63,6 +60,12 @@ export default {
         },
         field() {
             return this.form.field;
+        },
+        isEmag() {
+            const saleChannel = `${this.form.field('sale_channel_id').value}`;
+
+            return this.form.param('type') === this.enums.orders.Sale
+                && saleChannel === this.enums.saleChannels.emag;
         },
         partner() {
             const orders = this.enums.orders;
